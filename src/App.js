@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import React, {Component, useState} from "react"
+import styled from "styled-components";
+import './App.css';
+import Cart from './components/Cart';
+import Header from './components/Header';
+import HeroSection from './components/HeroSection'
+import ProductsSection from './components/ProductsSection';
+
+class App extends Component {
+
+  state = {
+    menuStatus: 'open',
+    style:"menu"
+  }
+
+  switcher = () => {
+  switch(this.state.menuStatus)
+  {
+    case "open":
+      this.setState({
+        menuStatus:"close",
+        style:"menu active"
+      });
+      break;
+    case "close":
+      this.setState({
+        menuStatus:"open",
+        style:"menu"
+      });
+      break;
+  }
+ }
+render(){
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <Header toggler={this.switcher}/>
+      <HeroSection />
+      <ProductsSection />
+      <Cart style={this.state.style} toggler={this.switcher}/>
     </div>
   );
+} 
 }
 
 export default App;
