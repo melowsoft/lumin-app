@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client';
 import Loader from './Loader';
 
-const cart = [];
-localStorage.setItem("cart", JSON.stringify(cart))
+
 
 const GET_PRODUCTS = gql`
   {
