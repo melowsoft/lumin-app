@@ -11,7 +11,7 @@ function HeroSection() {
 
             <div className="hero-filter">
                 <select placeholder="Filter by">
-                    <option value="single-product" selected>Filter by</option>
+                    <option value="single-product" defaultValue>Filter by</option>
                 </select>
             </div>
         </HeroWrap>

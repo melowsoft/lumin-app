@@ -1,7 +1,93 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from "styled-components"
+import { useQuery, gql } from '@apollo/client';
 
-function Cart({style, toggler}) {
+const GET_CURRENCIES = gql`
+  {
+    currency 
+  }
+`
+
+function Cart({style, toggler, currency, updateCurrency, products, cartTotalCalc}) {
+    const { loading, error, data } = useQuery(GET_CURRENCIES) 
+    const [ currencies, currenciesSetter ] = useState([])
+    const [incrementData, updateIncrementDataData] = useState(0)
+    const [decrementData, updateDecrementDataData] = useState(0)
+    const [subTotal, updateSubtotal] = useState(0)
+
+    const cart = JSON.parse(localStorage.getItem("cart"))
+    const selected = []
+    
+   const renderCart = () => {
+    for (let i = 0; i < products.length; i++){
+        for (let j = 0; j < cart.length; j++){
+            if (products[i].id == cart[j].id){
+                let newItem = {
+                   id: products[i].id,
+                   title: products[i].title,
+                   price: products[i].price,
+                   image: products[i].image_url,
+                   quantity: cart[j].quantity
+                }
+                selected.push(newItem)
+            }
+        }
+    }
+   }
+
+   renderCart()
+
+    useEffect(() => {
+
+        if(data && data.currency){
+            currenciesSetter(data.currency)
+        }
+    
+        if (selected.length > 0){
+            cartTotalCalc(selected)
+            calculateSubTotal(selected)
+        }
+ 
+
+      })
+
+      const testValue = (e) => {
+        updateCurrency(e.target.value)
+      }
+
+     const increament = (id) => {
+        for (let i = 0; i < cart.length; i++){
+            if(cart[i].id == id){
+                cart[i].quantity++ 
+            }
+        }
+        localStorage.setItem("cart", JSON.stringify(cart)) 
+        return updateIncrementDataData(incrementData + 1)
+          
+     }
+     const decreament = (id) => {
+        for (let i = 0; i < cart.length; i++){
+            if(cart[i].id == id && cart[i].quantity != 1){
+                cart[i].quantity-- 
+            }
+        }
+        localStorage.setItem("cart", JSON.stringify(cart)) 
+        return updateDecrementDataData(decrementData - 1)
+          
+     }
+
+     const removeFromCart = (id) => {
+        let newArr = cart.filter(item => item.id !== id)
+        localStorage.setItem("cart", JSON.stringify(newArr))
+        return updateIncrementDataData(incrementData + 1)
+     }
+
+     const calculateSubTotal = (prods) => {
+        const res = prods.map(prod => prod.price * prod.quantity).reduce((a,b) => a + b )
+        return updateSubtotal(res)
+     }
+
+
     return (
     <CartWrap className={style}>
         <div className="container">
@@ -24,54 +110,37 @@ function Cart({style, toggler}) {
             </div>
 
             <div className="currency-row">
-                <select className="currency-select" style={{maxWidth: 80}}>
-                    <option value="NGN">NGN</option>
-                    <option value="USD">USD</option>
+                <select className="currency-select" style={{maxWidth: 80}} selected={currency} onChange={(e) => testValue(e)}>
+                    {currencies.length > 0 ? currencies.map(currency => (
+                        <option onClick={() => updateCurrency(currency)} key={currency} value={currency}>{currency}</option>
+                    )) : <option value="NGN">NGN</option>}
                 </select>
             </div>
 
             <div className="cart-body">
                 <div className="cart-items-list">
-                    <div className="cart-item">
+
+                    {selected.map(item => (
+                         <div className="cart-item" key={item.id}>
                         <div className="product-description">
-                              <span className="remove-product" style={{cursor: "pointer"}}>x</span>  
-                              <h6>Age Management Set</h6>
-                              <div><span className="ff-bau-medium">MADE FOR:</span> mac</div>
-                              <div>Combination | 25-34</div>
-                              <div className=""><span className="d-block">Two Month <span>supply shipped every two months</span>.
-                              </span><span>Cancel or change frequency anytime</span></div>
-                              <div className="d-none"><span>One time purchase of</span> Two Month <span>supply</span>.</div>
-                              <div className="quantity"><div className="quantity-selector"><span className="counter-action decrement">-</span><span className="counter-number counter"> 1 </span>
-                              <span className="counter-action increment">+</span></div><div className="price">NGN&nbsp;20,000.00</div></div>
+                              <span onClick={() => removeFromCart(item.id)} className="remove-product" style={{cursor: "pointer"}}>x</span>  
+                    <h6>{item.title}</h6>
+
+                              <div className="quantity"><div className="quantity-selector"><span onClick={() => decreament(item.id)} className="counter-action decrement">-</span><span className="counter-number counter"> {item.quantity} </span>
+                    <span onClick={() => increament(item.id)} className="counter-action increment">+</span></div><div className="price">{currency}{item.price}</div></div>
                         </div>
 
                         <div className="product-image">
-                            <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="Product Image" className="image"/>
+                            <img src={item.image} alt="Product Image" className="image"/>
                         </div>
                     </div>
-                    <div className="cart-item">
-                        <div className="product-description">
-                              <span className="remove-product" style={{cursor: "pointer"}}>x</span>  
-                              <h6>Age Management Set</h6>
-                              <div><span className="ff-bau-medium">MADE FOR:</span> mac</div>
-                              <div>Combination | 25-34</div>
-                              <div className=""><span className="d-block">Two Month <span>supply shipped every two months</span>.
-                              </span><span>Cancel or change frequency anytime</span></div>
-                              <div className="d-none"><span>One time purchase of</span> Two Month <span>supply</span>.</div>
-                              <div className="quantity"><div className="quantity-selector"><span className="counter-action decrement">-</span><span className="counter-number counter"> 1 </span>
-                              <span className="counter-action increment">+</span></div><div className="price">NGN&nbsp;20,000.00</div></div>
-                        </div>
-
-                        <div className="product-image">
-                            <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="Product Image" className="image"/>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
             <div className="cart-footer">
                     <div className="cart-subtotal">
                         <span>Subtotal</span>
-                        <div className="subtotal-price">NGN&nbsp;20,000.00<div className="" style={{fontSize: 10}}>every 2 months</div></div>
+                    <div className="subtotal-price">{currency}&nbsp;{subTotal.toLocaleString()}<div className="" style={{fontSize: 10}}>every 2 months</div></div>
                     </div>
 
                     <div className="cart-buttons">
@@ -325,7 +394,7 @@ const CartWrap = styled.div`
     .currency-select {
     
     cursor: pointer;
-    padding: 10px 2em 10px 8px;
+    padding: 10px 2em 10px 2px;
     -webkit-padding-end: 30px;
     background-size: 17px 5px;
     -moz-appearance: none;

@@ -1,69 +1,82 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useQuery, gql } from '@apollo/client';
+import Loader from './Loader';
 
-function ProductsSection () {
+const cart = [];
+localStorage.setItem("cart", JSON.stringify(cart))
+
+const GET_PRODUCTS = gql`
+  {
+  products {
+    id,
+    title,
+    image_url,
+    price(currency: NGN)
+  }
+}
+`
+
+
+function ProductsSection ({products, loading, currency, switcher}) {
+
+     if (loading) return <Loader />;
+       
+ 
+     const addToCart = (id) => {
+        const cartData = JSON.parse(localStorage.getItem("cart"))
+        console.log(cartData, "cart data")
+        if(cartData.length == 0){
+             cartData.push({id: id, quantity: 1})
+             return localStorage.setItem("cart", JSON.stringify(cartData)) 
+        }
+        
+        let found = false;
+
+        for(let i = 0; i < cartData.length; i++) {
+            if (cartData[i].id == id) {
+               found = true;
+                break
+            }
+        }
+
+        if(found){
+            for(let i = 0; i < cartData.length; i++) {
+                if (cartData[i].id == id) {
+                    cartData[i].quantity++
+                }
+            }
+        } else {
+           
+            cartData.push({id: id, quantity: 1})
+        }
+        
+
+        return localStorage.setItem("cart", JSON.stringify(cartData))  
+                  
+     }
+    
+
     return (
        <ProductSectionWrap>
-           <div className="single-product">
+           {
+              products ? products.map(product => (
+                <div className="single-product" key={product.id}>
                 <div className="product-image-container">
-                   <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="product" className="product-image"/>
+                   <img src={product.image_url} alt="product" className="product-image"/>
                 </div>
-                <h3 className="product-title">Age Management Set</h3>
-                <p className="single-product-price">From $52.00</p>
+               <h3 className="product-title">{product.title}</h3>
+               <p className="single-product-price">From {`${currency}${product.price}`}</p>
                 <div className="button-wrap">
-                    <div className="action-button"> Add to Cart </div>
+                    <div onClick={() =>  {
+                        addToCart(product.id)
+                        switcher()
+                        }} className="action-button"> Add to Cart </div>
                 </div>
            </div>
-           <div className="single-product">
-                <div className="product-image-container">
-                   <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="product" className="product-image"/>
-                </div>
-                <h3 className="product-title">Age Management Set</h3>
-                <p className="single-product-price">From $52.00</p>
-                <div className="button-wrap">
-                    <div className="action-button"> Add to Cart </div>
-                </div>
-           </div>
-           <div className="single-product">
-                <div className="product-image-container">
-                   <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="product" className="product-image"/>
-                </div>
-                <h3 className="product-title">Age Management Set</h3>
-                <p className="single-product-price">From $52.00</p>
-                <div className="button-wrap">
-                    <div className="action-button"> Add to Cart </div>
-                </div>
-           </div>
-           <div className="single-product">
-                <div className="product-image-container">
-                   <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="product" className="product-image"/>
-                </div>
-                <h3 className="product-title">Age Management Set</h3>
-                <p className="single-product-price">From $52.00</p>
-                <div className="button-wrap">
-                    <div className="action-button"> Add to Cart </div>
-                </div>
-           </div>
-           <div className="single-product">
-                <div className="product-image-container">
-                   <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="product" className="product-image"/>
-                </div>
-                <h3 className="product-title">Age Management Set</h3>
-                <p className="single-product-price">From $52.00</p>
-                <div className="button-wrap">
-                    <div className="action-button"> Add to Cart </div>
-                </div>
-           </div>
-           <div className="single-product">
-                <div className="product-image-container">
-                   <img src="https://d1b929y2mmls08.cloudfront.net/luminskin/img/new-landing-page/age-management.png" alt="product" className="product-image"/>
-                </div>
-                <h3 className="product-title">Age Management Set</h3>
-                <p className="single-product-price">From $52.00</p>
-                <div className="button-wrap">
-                    <div className="action-button"> Add to Cart </div>
-                </div>
-           </div>
+               ))
+               : <p>Loading...</p> 
+           }
        </ProductSectionWrap> 
     )
 }
@@ -83,12 +96,17 @@ const ProductSectionWrap = styled.div`
     flex: 0 0 33.33%;
     }
 
+    .single-product .single-product-price {
+        margin-top: 10px;
+    }
+
     .single-product .product-image-container .product-image {
     font-size: 20px;
     font-family: FF Bau Medium, san-serif;
      margin-bottom: 30px; 
     padding: 0 15px;
     max-height: 180px;
+    width: 100%;
     object-fit: contain;
     }
 

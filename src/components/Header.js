@@ -2,7 +2,7 @@ import React from 'react'
 import styled from "styled-components"
 import { breakpoint } from "./style-utils";
 
-function Header({toggler}) {
+function Header({toggler, cartTotal}) {
     return (
             <HeaderWrap>
                 <div className="header-content">
@@ -18,7 +18,7 @@ function Header({toggler}) {
                         <a href="#" className="nav-item">Account</a>
                         <div onClick={() => toggler()} className="nav-item cart-flex">
                         <img src="https://cdn.shopify.com/s/files/1/0044/1237/5107/files/Image_1_2x_5f1251f7-a674-4496-92be-9cca5561534e.png?v=1581352198" className="cart-icon"/>
-                        <div>0</div>
+                         <div>{cartTotal}</div>
                         </div>
                         
                     </nav>
