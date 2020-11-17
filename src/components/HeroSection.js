@@ -21,8 +21,9 @@ function HeroSection() {
 export default HeroSection;
 
 const HeroWrap = styled.div`
-    min-height: 321px; 
+    min-height: 300px; 
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     padding: 70px 25px 25px;
     background-color: #FCFCF9;
@@ -39,7 +40,8 @@ const HeroWrap = styled.div`
 
     .hero-filter {
     max-width: 333px;
-    width: 50%;
+    width: 100%;
+    margin: 0 40px;
     }
 
     .hero-filter select {

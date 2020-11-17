@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useQuery, gql } from '@apollo/client';
 import Loader from './Loader';
+import {breakpoint} from './style-utils'
 
 
 
@@ -99,9 +100,16 @@ const ProductSectionWrap = styled.div`
         margin-top: 10px;
     }
 
+    .product-image-container {
+     min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    }
+
     .single-product .product-image-container .product-image {
     font-size: 20px;
-    font-family: FF Bau Medium, san-serif;
      margin-bottom: 30px; 
     padding: 0 15px;
     max-height: 180px;
@@ -125,4 +133,28 @@ const ProductSectionWrap = styled.div`
         display: flex;
         justify-content: center;
     }
+
+    ${breakpoint.md`
+    .single-product {
+    flex: 0 50%;
+
+    .button-wrap .action-button {
+            width: 70%
+        }
+    
+    }
+
+    `}
+    ${breakpoint.sm`
+        .button-wrap .action-button {
+            width: 100%
+        }
+
+    `}
+
+    ${breakpoint.xs`
+    .single-product {
+    flex: 100%;
+    }
+    `}
 `

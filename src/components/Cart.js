@@ -224,7 +224,7 @@ const CartWrap = styled.div`
     flex-direction: column;
     height: 100%;
     overflow-x: auto;
-    max-width: 550px;
+    max-width: 600px;
     width: 100%;
     z-index: 1500;
     opacity: 1;
@@ -268,7 +268,7 @@ const CartWrap = styled.div`
                 font-size: 100%;
                 margin-top: 10px;
                 display: flex;
-                justify-content: space-between;
+                justify-content: space-around;
                 align-items: center; 
 
                 .quantity-selector {
@@ -287,7 +287,7 @@ const CartWrap = styled.div`
                 }
 
                 .price {
-                    float: right;
+                   
                     padding: 0 10px;
                     width: inherit;
                     font-size: 13px;

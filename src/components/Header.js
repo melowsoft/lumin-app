@@ -10,9 +10,9 @@ function Header({toggler, cartTotal}) {
                         <a href="#" className="nav-item">
                             <img src="https://cdn.shopify.com/s/files/1/0044/1237/5107/files/logo-dark_ec479ecc-793e-4643-bd5b-bac40a841493.png?v=1598617182" alt="logo" className="logo"/>
                         </a>
-                        <a href="#" className="nav-item">Shop</a>
-                        <a href="#" className="nav-item">Help</a>
-                        <a href="#" className="nav-item">Blog</a>
+                        <a href="#" className="nav-item big-menu">Shop</a>
+                        <a href="#" className="nav-item big-menu">Help</a>
+                        <a href="#" className="nav-item big-menu">Blog</a>
                     </nav>
                     <nav className="nav-section">
                         <a href="#" className="nav-item">Account</a>
@@ -81,5 +81,10 @@ const HeaderWrap = styled.div`
     padding-right: 0;
     margin-left: 40px;
     margin-right: 40px;
+
+    .nav-section .big-menu {
+        visibility: hidden;
+    }
+
    `}
 `
